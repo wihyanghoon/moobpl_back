@@ -188,8 +188,13 @@ app.patch('/user', async (req, res) => {
 
 app.get('/plan', async (req, res) => {
     try {
-        const plans = await db.collection('post').find({ id: req.user.email }).toArray()
-        res.status(200).json(plans)
+        if(req.user) {
+            res.status(200).send({ message: '유저가 없음' });
+        } else{
+            res.status(200).send({ message: '유저가 있음' });
+        }
+        // const plans = await db.collection('post').find({ id: req.user.email }).toArray()
+        // res.status(200).json(plans)
     } catch (error) {
         console.error(error)
     }
