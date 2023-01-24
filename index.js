@@ -191,7 +191,7 @@ app.patch('/user', async (req, res) => {
 
 app.get('/plan', async (req, res) => {
     try {
-        const plans = await db.collection('post').find({ id: req.user.email }).toArray()
+        const plans = await db.collection('post').find({ id: req.user.email })
         res.status(200).json(plans)
     } catch (error) {
         console.error(error)
