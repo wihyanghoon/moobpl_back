@@ -198,10 +198,10 @@ app.post('/plan', async (req, res) => {
     try {
         await db.collection('post').insertOne({
             id: req.body.id,
-            reigon: req.body.reigon,
+            reigon: req.body.region,
             date: req.body.date,
-            checklist: req.body.checklist,
-            plan: req.body.plan
+            checkList: req.body.checkList,
+            todos: req.body.todos
         })
         res.status(200).send({ message: '일정이 등록되었습니다.' });
     } catch (error) {
