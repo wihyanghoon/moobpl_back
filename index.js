@@ -19,10 +19,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser())
 app.use(session({
-    secret: process.env.COOKIE_SECRET,
-    resave: true,
     saveUninitialized: false,
-}))
+    resave: false,
+    secret: process.env.COOKIE_SECRET,
+    proxy: true,
+    cookie: {
+        httpOnly: true,
+        secure: true,
+        maxAge: 1000 * 60 * 10,
+        sameSite: "none",
+    }
+}));
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -169,6 +176,21 @@ app.get('/user', async (req, res, next) => {
     }
 })
 
+app.get('/plan', async (req, res) => {
+    try {
+        if (req.user) {
+            console.log(req.user.email)
+            res.status(200).send({ message: '유저가 없음' });
+        } else {
+            res.status(200).send({ message: '유저가 있음' });
+        }
+        // const plans = await db.collection('post').find({ id: req.user.email }).toArray()
+        // res.status(200).json(plans)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 app.patch('/user', async (req, res) => {
     try {
         const updateUser = await db.collection('user').updateOne(
@@ -180,23 +202,6 @@ app.patch('/user', async (req, res) => {
         )
         console.log(updateNick.nickname)
         res.status(200).json(updateUser.nickName)
-    } catch (error) {
-        console.error(error)
-    }
-})
-
-
-
-app.get('/plan', async (req, res) => {
-    try {
-        if(req.user) {
-            console.log(req.user.email)
-            res.status(200).send({ message: '유저가 없음' });
-        } else{
-            res.status(200).send({ message: '유저가 있음' });
-        }
-        // const plans = await db.collection('post').find({ id: req.user.email }).toArray()
-        // res.status(200).json(plans)
     } catch (error) {
         console.error(error)
     }
@@ -216,3 +221,28 @@ app.post('/plan', async (req, res) => {
         console.error(error)
     }
 })
+
+// app.delete('/plan/:id', async (req, res) => {
+//     try {
+//         await db.collection('post').deleteOne(
+//             { _id: ObjectId(req.params.id) }
+//         )
+//         res.status(200).send({ message: '삭제완료.' });
+//     } catch (error) {
+//         console.error(error)
+//     }
+// })
+
+// app.patch('/plan/:id/checklist', async (req, res) => {
+//     console.log(req.body.checkList)
+//     console.log(req.params.id)
+//     try {
+//         await db.collection('post').updateOne(
+//             { _id: ObjectId(req.params.id) },
+//             { $set: { checkList: req.body.checkList } }
+//         )
+//         res.status(200).send({ message: '체크리스트 수정완료.' });
+//     } catch (error) {
+//         console.error(error)
+//     }
+// })
