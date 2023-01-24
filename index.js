@@ -26,7 +26,7 @@ app.use(passport.session())
 
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://localhost:3000/'],
     credentials: true,
 }))
 
@@ -191,7 +191,7 @@ app.patch('/user', async (req, res) => {
 
 app.get('/plan', async (req, res) => {
     try {
-        const plans = await db.collection('post').find({ id: req.user.email })
+        const plans = await db.collection('post').find({ id: req.user.email }).
         res.status(200).json(plans)
     } catch (error) {
         console.error(error)
