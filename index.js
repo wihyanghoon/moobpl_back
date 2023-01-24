@@ -178,14 +178,12 @@ app.get('/user', async (req, res, next) => {
 
 app.get('/plan', async (req, res) => {
     try {
-        if (req.user) {
-            console.log(req.user.email)
-            res.status(200).send({ message: '유저가 없음' });
+        const plans = await db.collection('post').find({ id: req.user.email }).toArray()
+        if(plans){
+            res.status(200).json(plans)
         } else {
-            res.status(200).send({ message: '유저가 있음' });
+            res.status(200).send({ message: '게시물이 없습니다.' });
         }
-        // const plans = await db.collection('post').find({ id: req.user.email }).toArray()
-        // res.status(200).json(plans)
     } catch (error) {
         console.error(error)
     }
