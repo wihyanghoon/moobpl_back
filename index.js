@@ -42,7 +42,6 @@ MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (
     app.listen(Port, function () {
         console.log("8080 서버실행중")
     })
-
 })
 
 app.get('/', (req, res) =>{
@@ -233,6 +232,3 @@ app.patch('/plan/:id/checklist', async (req, res) =>{
         console.error(error)
     }
 })
-
-
-app.listen(Port, () => console.log(`listening on port ${Port}`));
