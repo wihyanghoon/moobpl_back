@@ -138,7 +138,7 @@ passport.serializeUser(function (user, done) { // function('db result 값', done
 
 passport.deserializeUser(function (id, done) {
     db.collection('user').findOne({ email: id }, function (에러, 결과) {
-        console.log("결과")
+        console.log("디시리얼라이즈")
         done(null, 결과)
     })
 });
@@ -156,6 +156,7 @@ app.post('/user/logout', islogin, (req, res, next) => {
 app.get('/user', async (req, res, next) => {
     try {
         if (req.user) {
+            console.log(req.user)
             const user = await db.collection('user').findOne({
                 email: req.user.email
             })
@@ -189,6 +190,7 @@ app.patch('/user', async (req, res) => {
 app.get('/plan', async (req, res) => {
     try {
         if(req.user) {
+            console.log(req.user.email)
             res.status(200).send({ message: '유저가 없음' });
         } else{
             res.status(200).send({ message: '유저가 있음' });
@@ -210,31 +212,6 @@ app.post('/plan', async (req, res) => {
             todos: req.body.todos
         })
         res.status(200).send({ message: '일정이 등록되었습니다.' });
-    } catch (error) {
-        console.error(error)
-    }
-})
-
-app.delete('/plan/:id', async (req, res) => {
-    try {
-        await db.collection('post').deleteOne(
-            { _id: ObjectId(req.params.id) }
-        )
-        res.status(200).send({ message: '삭제완료.' });
-    } catch (error) {
-        console.error(error)
-    }
-})
-
-app.patch('/plan/:id/checklist', async (req, res) => {
-    console.log(req.body.checkList)
-    console.log(req.params.id)
-    try {
-        await db.collection('post').updateOne(
-            { _id: ObjectId(req.params.id) },
-            { $set: { checkList: req.body.checkList } }
-        )
-        res.status(200).send({ message: '체크리스트 수정완료.' });
     } catch (error) {
         console.error(error)
     }
