@@ -191,8 +191,9 @@ app.patch('/user', async (req, res) => {
 
 app.get('/plan', async (req, res) => {
     try {
-        const plans = await db.collection('post').find({ id: req.user.email }).toArray()
-        res.status(200).json(plans)
+        res.status(200).json({
+            message: "sopt 서버 여러분 안녕하세요~,sopt-Media에 좋아요와 댓글 부탁드립니다!!(꾸벅)",
+        })
     } catch (error) {
         console.error(error)
     }
