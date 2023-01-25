@@ -220,16 +220,16 @@ app.post('/plan', async (req, res) => {
     }
 })
 
-// app.delete('/plan/:id', async (req, res) => {
-//     try {
-//         await db.collection('post').deleteOne(
-//             { _id: ObjectId(req.params.id) }
-//         )
-//         res.status(200).send({ message: '삭제완료.' });
-//     } catch (error) {
-//         console.error(error)
-//     }
-// })
+app.delete('/plan/:id', async (req, res) => {
+    try {
+        await db.collection('post').deleteOne(
+            { _id: ObjectId(req.params.id) }
+        )
+        res.status(200).send({ message: '삭제완료.' });
+    } catch (error) {
+        console.error(error)
+    }
+})
 
 // app.patch('/plan/:id/checklist', async (req, res) => {
 //     console.log(req.body.checkList)
