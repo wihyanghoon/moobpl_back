@@ -207,14 +207,14 @@ app.patch('/user', async (req, res) => {
 
 app.post('/plan', async (req, res) => {
     try {
-        await db.collection('post').insertOne({
+        const plan = await db.collection('post').insertOne({
             id: req.body.id,
             reigon: req.body.region,
             date: req.body.date,
             checkList: req.body.checkList,
             todos: req.body.todos
         })
-        res.status(200).send({ message: '일정이 등록되었습니다.' });
+        res.status(200).json(plan.ops[0]);
     } catch (error) {
         console.error(error)
     }
