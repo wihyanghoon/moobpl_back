@@ -75,7 +75,7 @@ app.post('/user/signup', async (req, res) => {
     }
 })
 
-app.post('/user/login', isNotlogin, (req, res, next) => {
+app.post('/user/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
             console.error(err);
@@ -123,21 +123,21 @@ passport.use(new LocalStrategy({
 }));
 
 
-function islogin(req, res, next) {
-    if (req.user) {
-        next()
-    } else {
-        res.send('로그인 안했어요')
-    }
-}
+// function islogin(req, res, next) {
+//     if (req.user) {
+//         next()
+//     } else {
+//         res.send('로그인 안했어요')
+//     }
+// }
 
-function isNotlogin(req, res, next) {
-    if (!req.user) {
-        next()
-    } else {
-        res.send('로그인 했어요')
-    }
-}
+// function isNotlogin(req, res, next) {
+//     if (!req.user) {
+//         next()
+//     } else {
+//         res.send('로그인 했어요')
+//     }
+// }
 
 // session에 저장하는 기능을 합니다.
 passport.serializeUser(function (user, done) { // function('db result 값', done)
@@ -151,7 +151,7 @@ passport.deserializeUser(function (id, done) {
     })
 });
 
-app.post('/user/logout', islogin, (req, res, next) => {
+app.post('/user/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) { return next(err); }
         req.session.destroy(() => {
@@ -240,13 +240,37 @@ app.patch('/plan/:id/todos', async (req, res) => {
         }
         await db.collection('post').updateOne(
             { _id: ObjectId(req.params.id) },
-            { $set: { todos: { date: req.body.date, _id: uuid(), todo: req.body.todo } } }
+            { $push: { todos: { date: req.body.date, _id: uuid(), todo: req.body.todo } } }
         )
-        res.send({ message: "성공" })
+        const findUpdateTodos = await db.collection('post').findOne(
+            { _id: ObjectId(req.params.id) }
+        )
+        console.log(findUpdateTodos)
+        res.status(200).json(findUpdateTodos)
     } catch (error) {
         console.error(error)
     }
 })
+
+// app.patch('/plan/:id/todos/todo', async (req, res) => {
+//     try {
+//         const uuid = () => {
+//             const tokens = v4().split('-')
+//             return tokens[2] + tokens[1] + tokens[0] + tokens[3] + tokens[4];
+//         }
+//         await db.collection('post').updateOne(
+//             { _id: ObjectId(req.params.id) },
+//             { $push: { todos: { todo : { _id: uuid(), title: req.body.title, body: req.body.body, category: req.body.category}}} } }
+//         )
+//         const findUpdateTodos = await db.collection('post').findOne(
+//             { _id: ObjectId(req.params.id) }
+//         )
+//         console.log(findUpdateTodos)
+//         res.status(200).json(findUpdateTodos)
+//     } catch (error) {
+//         console.error(error)
+//     }
+// })
 
 app.patch('/plan/:id/checklist', async (req, res) => {
     console.log(req.body.checkList)
