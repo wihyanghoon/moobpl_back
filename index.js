@@ -190,6 +190,7 @@ app.get('/plan', async (req, res) => {
     }
 })
 
+// 유저 닉네임 변경
 app.patch('/user', async (req, res) => {
     try {
         const updateUser = await db.collection('user').updateOne(
@@ -206,6 +207,7 @@ app.patch('/user', async (req, res) => {
     }
 })
 
+// 계획 등록
 app.post('/plan', async (req, res) => {
     try {
         const plan = await db.collection('post').insertOne({
@@ -221,6 +223,7 @@ app.post('/plan', async (req, res) => {
     }
 })
 
+// 계획 삭제
 app.delete('/plan/:id', async (req, res) => {
     try {
         await db.collection('post').deleteOne(
@@ -232,6 +235,7 @@ app.delete('/plan/:id', async (req, res) => {
     }
 })
 
+// 할일 일정 추가 (날짜)
 app.patch('/plan/:id/todos', async (req, res) => {
     try {
         const uuid = () => {
@@ -252,25 +256,63 @@ app.patch('/plan/:id/todos', async (req, res) => {
     }
 })
 
-// app.patch('/plan/:id/todos/todo', async (req, res) => {
-//     try {
-//         const uuid = () => {
-//             const tokens = v4().split('-')
-//             return tokens[2] + tokens[1] + tokens[0] + tokens[3] + tokens[4];
-//         }
-//         await db.collection('post').updateOne(
-//             { _id: ObjectId(req.params.id) },
-//             { $push: { todos: { todo : { _id: uuid(), title: req.body.title, body: req.body.body, category: req.body.category}}} } }
-//         )
-//         const findUpdateTodos = await db.collection('post').findOne(
-//             { _id: ObjectId(req.params.id) }
-//         )
-//         console.log(findUpdateTodos)
-//         res.status(200).json(findUpdateTodos)
-//     } catch (error) {
-//         console.error(error)
-//     }
-// })
+// 할일 일정 삭제 (날짜)
+app.delete('/plan/:id/todos/:todosId', async (req, res) => {
+    try {
+        await db.collection('post').updateOne(
+            { _id: ObjectId(req.params.id) },
+            { $pull: { todos: { _id: req.params.todosId } } }
+        )
+        res.status(200).json(req.params.todosId)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+
+// 할일 등록
+app.patch('/plan/:id/todos/:todosId/todo', async (req, res) => {
+    try {
+        const uuid = () => {
+            const tokens = v4().split('-')
+            return tokens[2] + tokens[1] + tokens[0] + tokens[3] + tokens[4];
+        }
+
+        await db.collection('post').updateOne(
+            { _id: ObjectId(req.params.id), "todos._id": req.params.todosId },
+            {
+                $push: {
+                    "todos.$.todo":
+                    {
+                        _id: uuid(),
+                        title: req.body.title,
+                        body: req.body.body,
+                        category: req.body.category
+                    }
+                }
+            }
+        );
+        const findTodos = await db.collection('post').findOne(
+            { _id: ObjectId(req.params.id) }
+        )
+        res.send(findTodos)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+// 할일 삭제
+app.delete('/plan/:id/todos/:todosId/todo/:todoId', async (req, res) => {
+    try {
+        await db.collection('post').updateOne(
+            { _id: ObjectId(req.params.id), "todos._id": req.params.todosId },
+            { $pull: { "todos.$.todo": { _id: req.params.todoId } } }
+        )
+        res.json(req.params.todoId)
+    } catch (error) {
+        console.error(error)
+    }
+})
 
 app.patch('/plan/:id/checklist', async (req, res) => {
     console.log(req.body.checkList)
