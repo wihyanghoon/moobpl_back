@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
+const { v4 } = require('uuid')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const cors = require('cors')
@@ -179,7 +180,7 @@ app.get('/user', async (req, res, next) => {
 app.get('/plan', async (req, res) => {
     try {
         const plans = await db.collection('post').find({ id: req.user.email }).toArray()
-        if(plans){
+        if (plans) {
             res.status(200).json(plans)
         } else {
             res.status(200).send({ message: '게시물이 없습니다.' });
@@ -231,16 +232,36 @@ app.delete('/plan/:id', async (req, res) => {
     }
 })
 
-// app.patch('/plan/:id/checklist', async (req, res) => {
-//     console.log(req.body.checkList)
-//     console.log(req.params.id)
-//     try {
-//         await db.collection('post').updateOne(
-//             { _id: ObjectId(req.params.id) },
-//             { $set: { checkList: req.body.checkList } }
-//         )
-//         res.status(200).send({ message: '체크리스트 수정완료.' });
-//     } catch (error) {
-//         console.error(error)
-//     }
-// })
+app.patch('/plan/:id/todos', async (req, res) => {
+    try {
+        const uuid = () => {
+            const tokens = v4().split('-')
+            return tokens[2] + tokens[1] + tokens[0] + tokens[3] + tokens[4];
+        }
+        await db.collection('post').updateOne(
+            { _id: ObjectId(req.params.id) },
+            { $set: { todos: { date: req.body.date, _id: uuid(), todo: req.body.todo } } }
+        )
+        res.send({ message: "성공" })
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+app.patch('/plan/:id/checklist', async (req, res) => {
+    console.log(req.body.checkList)
+    console.log(req.params.id)
+    try {
+        await db.collection('post').updateOne(
+            { _id: ObjectId(req.params.id) },
+            { $set: { checkList: req.body.checkList } }
+        )
+        const findUpdateCheckList = await db.collection('post').findOne(
+            { _id: ObjectId(req.params.id) }
+        )
+        console.log(findUpdateCheckList)
+        res.status(200).json(findUpdateCheckList);
+    } catch (error) {
+        console.error(error)
+    }
+})
