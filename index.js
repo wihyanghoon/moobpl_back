@@ -308,7 +308,11 @@ app.delete('/plan/:id/todos/:todosId/todo/:todoId', async (req, res) => {
             { _id: ObjectId(req.params.id), "todos._id": req.params.todosId },
             { $pull: { "todos.$.todo": { _id: req.params.todoId } } }
         )
-        res.json(req.params.todoId)
+        res.json({
+            _id: req.params.id,
+            todosId: req.params.todosId,
+            todoId: req.params.todoId,
+        })
     } catch (error) {
         console.error(error)
     }
