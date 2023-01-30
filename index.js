@@ -290,7 +290,8 @@ app.patch('/plan/:id/todos/:todosId/todo', async (req, res) => {
                         _id: uuid(),
                         title: req.body.title,
                         body: req.body.body,
-                        category: req.body.category
+                        category: req.body.category,
+                        color: req.body.color,
                     }
                 }
             }
