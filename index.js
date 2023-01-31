@@ -61,7 +61,7 @@ app.post('/user/signup', async (req, res) => {
             email: req.body.email
         })
         if (exUser) {
-            return res.status(403).send({ reason: '이미 사용중인 아이디입니다.' });
+            return res.status(403).send('이미 사용중인 아이디입니다.');
         }
         const hashedPassword = await bcrypt.hash(req.body.password, 12);
         await db.collection('user').insertOne({
@@ -121,21 +121,21 @@ passport.use(new LocalStrategy({
 }));
 
 
-// function islogin(req, res, next) {
-//     if (req.user) {
-//         next()
-//     } else {
-//         res.send('로그인 안했어요')
-//     }
-// }
+function islogin(req, res, next) {
+    if (req.user) {
+        next()
+    } else {
+        res.send('로그인 안했어요')
+    }
+}
 
-// function isNotlogin(req, res, next) {
-//     if (!req.user) {
-//         next()
-//     } else {
-//         res.send('로그인 했어요')
-//     }
-// }
+function isNotlogin(req, res, next) {
+    if (!req.user) {
+        next()
+    } else {
+        res.send('로그인 했어요')
+    }
+}
 
 // session에 저장하는 기능을 합니다.
 passport.serializeUser(function (user, done) { // function('db result 값', done)
@@ -178,11 +178,15 @@ app.get('/user', async (req, res, next) => {
 
 app.get('/plan', async (req, res) => {
     try {
-        const plans = await db.collection('post').find({ id: req.user.email }).toArray()
-        if (plans) {
-            res.status(200).json(plans)
+        if(req.user){
+            const plans = await db.collection('post').find({ id: req.user.email }).toArray()
+            if (plans) {
+                res.status(200).json(plans)
+            } else {
+                res.status(200).send({ message: '게시물이 없습니다.' });
+            }
         } else {
-            res.status(200).send({ message: '게시물이 없습니다.' });
+            res.status(200).json(null)
         }
     } catch (error) {
         console.error(error)
