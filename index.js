@@ -81,11 +81,9 @@ app.post('/user/login', (req, res, next) => {
             console.error(err);
             return next(err)
         }
-
         if (info) {
             return res.status(403).send(info.reason)
         }
-
         return req.login(user, async (loginErr) => {
             if (loginErr) {
                 console.error(loginErr)
@@ -163,14 +161,15 @@ app.post('/user/logout', (req, res, next) => {
 
 app.get('/user', async (req, res, next) => {
     try {
-        if (req.user) {
+        if(!req.user) {
+            res.status(200).json(null)
+        }
+        else if (req.user) {
             console.log(req.user)
             const user = await db.collection('user').findOne({
                 email: req.user.email
             })
             res.status(200).json(user)
-        } else {
-            res.status(200).json(null)
         }
     } catch (error) {
         console.error(error)
