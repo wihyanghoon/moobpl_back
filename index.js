@@ -196,15 +196,15 @@ app.get('/plan', async (req, res) => {
 // 유저 닉네임 변경
 app.patch('/user', async (req, res) => {
     try {
-        const updateUser = await db.collection('user').updateOne(
+        await db.collection('user').updateOne(
             { email: req.user.email },
             { $set: { nickName: req.body.nickname } }
         )
-        const updateNick = await db.collection('user').findOne(
+        const User = await db.collection('user').findOne(
             { email: req.user.email }
         )
-        console.log(updateNick.nickname)
-        res.status(200).json(updateUser.nickName)
+        console.log(User)
+        res.status(200).json(User)
     } catch (error) {
         console.error(error)
     }
