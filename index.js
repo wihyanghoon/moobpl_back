@@ -51,7 +51,7 @@ MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (
 
 app.get('/', (req, res) => {
     res.status(200).json({
-        message: "sopt 서버 여러분 안녕하세요~,sopt-Media에 좋아요와 댓글 부탁드립니다!!(꾸벅)",
+        message: "환영합니다. 뭅플 벡엔드 서버입니다.",
     })
 })
 
@@ -61,7 +61,7 @@ app.post('/user/signup', async (req, res) => {
             email: req.body.email
         })
         if (exUser) {
-            return res.status(403).send("이미 사용중인 아이디 입니다.");
+            return res.status(403).send({ reason: '이미 사용중인 아이디입니다.' });
         }
         const hashedPassword = await bcrypt.hash(req.body.password, 12);
         await db.collection('user').insertOne({
@@ -69,7 +69,7 @@ app.post('/user/signup', async (req, res) => {
             email: req.body.email,
             password: hashedPassword,
         })
-        res.status(200).send({ message: '성공했습니다.' });
+        res.status(200).send('회원가입에 성공했습니다.');
     } catch (error) {
         console.error(error)
     }
@@ -107,7 +107,7 @@ passport.use(new LocalStrategy({
     try {
         const user = await db.collection('user').findOne({ email: username })
         if (!user) {
-            return done(null, false, { reason: '존재하지 않는 이메일 입니다!' })
+            return done(null, false, { reason: '존재하지 않는 이메일 입니다.' })
         }
         const result = await bcrypt.compare(password, user.password)
 
