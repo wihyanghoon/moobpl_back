@@ -198,7 +198,7 @@ app.patch('/user', async (req, res) => {
     try {
         await db.collection('user').updateOne(
             { email: req.user.email },
-            { $set: { nickName: req.body.nickname } }
+            { $set: { nickName: req.body.nickName } }
         )
         const User = await db.collection('user').findOne(
             { email: req.user.email }
