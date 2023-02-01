@@ -2,6 +2,8 @@ const express = require('express')
 const app = express();
 const bcrypt = require('bcrypt')
 const dotenv = require('dotenv');
+const multer = require('multer'); // express에 multer모듈 적용 (for 파일업로드)
+const upload = multer({ dest: 'uploads/' })
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const { v4 } = require('uuid')
@@ -161,7 +163,7 @@ app.post('/user/logout', (req, res, next) => {
 
 app.get('/user', async (req, res, next) => {
     try {
-        if(!req.user) {
+        if (!req.user) {
             res.status(200).json(null)
         }
         else if (req.user) {
@@ -176,9 +178,14 @@ app.get('/user', async (req, res, next) => {
     }
 })
 
+app.post('/upload', upload.single('userfile'), function (req, res) {
+    res.send('Uploaded! : ' + req.file); // object를 리턴함
+    console.log(req.file); // 콘솔(터미널)을 통해서 req.file Object 내용 확인 가능.
+});
+
 app.get('/plan', async (req, res) => {
     try {
-        if(req.user){
+        if (req.user) {
             const plans = await db.collection('post').find({ id: req.user.email }).toArray()
             if (plans) {
                 res.status(200).json(plans)
@@ -218,7 +225,8 @@ app.post('/plan', async (req, res) => {
             reigon: req.body.region,
             date: req.body.date,
             checkList: req.body.checkList,
-            todos: req.body.todos
+            todos: req.body.todos,
+            cityImg: req.body.cityImg,
         })
         res.status(200).json(plan.ops[0]);
     } catch (error) {
