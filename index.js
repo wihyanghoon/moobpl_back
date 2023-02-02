@@ -94,6 +94,7 @@ app.post('/user/login', (req, res, next) => {
                 _id: user._id,
                 nickName: user.nickName,
                 email: user.email,
+                profile: user.profile
             })
         })
     })(req, res, next);
@@ -177,6 +178,7 @@ app.get('/user', async (req, res, next) => {
                 _id: user._id,
                 nickName: user.nickName,
                 email: user.email,
+                profile: user.profile
             })
         }
     } catch (error) {
@@ -203,10 +205,11 @@ app.get('/plan', async (req, res) => {
 
 // 유저 닉네임 변경
 app.patch('/user', async (req, res) => {
+    console.log(req)
     try {
         await db.collection('user').updateOne(
             { email: req.user.email },
-            { $set: { nickName: req.body.nickName } }
+            { $set: { nickName: req.body.nickName, profile: req.body.profile } }
         )
         const User = await db.collection('user').findOne(
             { email: req.user.email }
