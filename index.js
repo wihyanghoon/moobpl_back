@@ -13,7 +13,7 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: ['https://moobpl-dvjeiw2bg-moobpl.vercel.app', 'https://localhost:3000/'],
+    origin: ['https://moobpl-dvjeiw2bg-moobpl.vercel.app'],
     credentials: true,
 }))
 app.use(express.urlencoded({ extended: false }));
