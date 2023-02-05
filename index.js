@@ -13,7 +13,7 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: ['https://moobpl-dvjeiw2bg-moobpl.vercel.app'],
+    origin: 'https://moobpl-dvjeiw2bg-moobpl.vercel.app',
     credentials: true,
 }))
 app.use(express.urlencoded({ extended: false }));
@@ -31,6 +31,15 @@ app.use(session({
         sameSite: "none",
     }
 }));
+
+app.use(function(req, res, next) {
+    res.set('credentials', 'include');
+    res.set('Access-Control-Allow-Credentials', true);
+    res.set('Access-Control-Allow-Origin', req.headers.origin);
+    res.set('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.set('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+    next();
+});
 
 app.use(passport.initialize())
 app.use(passport.session())
