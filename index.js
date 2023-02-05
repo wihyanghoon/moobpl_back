@@ -13,7 +13,7 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://localhost:3000/'],
+    origin: ['https://moobpl-dvjeiw2bg-moobpl.vercel.app', 'https://localhost:3000/'],
     credentials: true,
 }))
 app.use(express.urlencoded({ extended: false }));
@@ -205,7 +205,6 @@ app.get('/plan', async (req, res) => {
 
 // 유저 닉네임 변경
 app.patch('/user', async (req, res) => {
-    console.log(req)
     try {
         await db.collection('user').updateOne(
             { email: req.user.email },
