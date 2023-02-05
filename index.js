@@ -58,13 +58,13 @@ MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (
     })
 })
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.status(200).json({
         message: "환영합니다. 뭅플 벡엔드 서버입니다.",
     })
 })
 
-app.post('/user/signup', async (req, res) => {
+app.post('/api/user/signup', async (req, res) => {
     try {
         const exUser = await db.collection('user').findOne({
             email: req.body.email
@@ -84,7 +84,7 @@ app.post('/user/signup', async (req, res) => {
     }
 })
 
-app.post('/user/login', (req, res, next) => {
+app.post('/api/user/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
             console.error(err);
@@ -163,7 +163,7 @@ passport.deserializeUser(function (id, done) {
     })
 });
 
-app.post('/user/logout', (req, res, next) => {
+app.post('/api/user/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) { return next(err); }
         req.session.destroy(() => {
@@ -173,7 +173,7 @@ app.post('/user/logout', (req, res, next) => {
     });
 })
 
-app.get('/user', async (req, res, next) => {
+app.get('/api/user', async (req, res, next) => {
     try {
         if (!req.user) {
             res.status(200).json(null)
@@ -195,7 +195,7 @@ app.get('/user', async (req, res, next) => {
     }
 })
 
-app.get('/plan', async (req, res) => {
+app.get('/api/plan', async (req, res) => {
     try {
         if (req.user) {
             const plans = await db.collection('post').find({ id: req.user.email }).toArray()
@@ -213,7 +213,7 @@ app.get('/plan', async (req, res) => {
 })
 
 // 유저 닉네임 변경
-app.patch('/user', async (req, res) => {
+app.patch('/api/user', async (req, res) => {
     try {
         await db.collection('user').updateOne(
             { email: req.user.email },
@@ -230,7 +230,7 @@ app.patch('/user', async (req, res) => {
 })
 
 // 계획 등록
-app.post('/plan', async (req, res) => {
+app.post('/api/plan', async (req, res) => {
     try {
         const plan = await db.collection('post').insertOne({
             id: req.body.id,
@@ -247,7 +247,7 @@ app.post('/plan', async (req, res) => {
 })
 
 // 계획 삭제
-app.delete('/plan/:id', async (req, res) => {
+app.delete('/api/plan/:id', async (req, res) => {
     try {
         await db.collection('post').deleteOne(
             { _id: ObjectId(req.params.id) }
@@ -259,7 +259,7 @@ app.delete('/plan/:id', async (req, res) => {
 })
 
 // 할일 일정 추가 (날짜)
-app.patch('/plan/:id/todos', async (req, res) => {
+app.patch('/api/plan/:id/todos', async (req, res) => {
     try {
         const uuid = () => {
             const tokens = v4().split('-')
@@ -280,7 +280,7 @@ app.patch('/plan/:id/todos', async (req, res) => {
 })
 
 // 할일 일정 삭제 (날짜)
-app.delete('/plan/:id/todos/:todosId', async (req, res) => {
+app.delete('/api/plan/:id/todos/:todosId', async (req, res) => {
     try {
         await db.collection('post').updateOne(
             { _id: ObjectId(req.params.id) },
@@ -297,7 +297,7 @@ app.delete('/plan/:id/todos/:todosId', async (req, res) => {
 
 
 // 할일 등록
-app.patch('/plan/:id/todos/:todosId/todo', async (req, res) => {
+app.patch('/api/plan/:id/todos/:todosId/todo', async (req, res) => {
     try {
         const uuid = () => {
             const tokens = v4().split('-')
@@ -329,7 +329,7 @@ app.patch('/plan/:id/todos/:todosId/todo', async (req, res) => {
 })
 
 // 할일 삭제
-app.delete('/plan/:id/todos/:todosId/todo/:todoId', async (req, res) => {
+app.delete('/api/plan/:id/todos/:todosId/todo/:todoId', async (req, res) => {
     try {
         await db.collection('post').updateOne(
             { _id: ObjectId(req.params.id), "todos._id": req.params.todosId },
@@ -345,7 +345,7 @@ app.delete('/plan/:id/todos/:todosId/todo/:todoId', async (req, res) => {
     }
 })
 
-app.patch('/plan/:id/checklist', async (req, res) => {
+app.patch('/api/plan/:id/checklist', async (req, res) => {
     console.log(req.body.checkList)
     console.log(req.params.id)
     try {
