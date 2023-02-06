@@ -53,15 +53,15 @@ MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build/index.html'));
-});
+// app.get('*', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'build/index.html'));
+// });
 
-app.get('/api', (req, res) => {
-    res.status(200).json({
-        message: "환영합니다. 뭅플 벡엔드 서버입니다.",
-    })
-})
+// app.get('/api', (req, res) => {
+//     res.status(200).json({
+//         message: "환영합니다. 뭅플 벡엔드 서버입니다.",
+//     })
+// })
 
 app.post('/api/user/signup', async (req, res) => {
     try {
@@ -362,6 +362,6 @@ app.patch('/api/plan/:id/checklist', async (req, res) => {
     }
 })
 
-app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, 'moobpl/build/index.html'));
-});
+// app.get('*', function (req, res) {
+//     res.sendFile(path.join(__dirname, 'moobpl/build/index.html'));
+// });
