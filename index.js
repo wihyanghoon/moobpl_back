@@ -14,7 +14,7 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: ['https://moobpl.herokuapp.com/', 'https://localhost:3000', 'https://localhost:8080g'],
+    origin: true,
     credentials: true,
 }))
 
@@ -27,10 +27,10 @@ app.use(session({
     secret: process.env.COOKIE_SECRET,
     proxy: true,
     cookie: {
-        httpOnly: true,
-        secure: true,
-        maxAge: 3153600,
-        sameSite: "none",
+        httpOnly : false,
+        sameSite : 'None',
+        maxAge : 5300000,
+        secure : true,
     }
 }));
 
@@ -363,5 +363,5 @@ app.patch('/api/plan/:id/checklist', async (req, res) => {
 })
 
 app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, '/moobpl/build/index.html'));
+    res.sendFile(path.join(__dirname, 'moobpl/build/index.html'));
 });
