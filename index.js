@@ -2,6 +2,7 @@ const express = require('express')
 const app = express();
 const bcrypt = require('bcrypt')
 const dotenv = require('dotenv');
+const path = require('path');
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const { v4 } = require('uuid')
@@ -13,9 +14,10 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: 'https://moobpl-dvjeiw2bg-moobpl.vercel.app',
+    origin: 'https://moobpl.herokuapp.com/',
     credentials: true,
 }))
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser())
@@ -31,15 +33,6 @@ app.use(session({
         sameSite: "none",
     }
 }));
-
-app.use(function(req, res, next) {
-    res.set('credentials', 'include');
-    res.set('Access-Control-Allow-Credentials', true);
-    res.set('Access-Control-Allow-Origin', req.headers.origin);
-    res.set('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.set('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
-    next();
-});
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -57,6 +50,12 @@ MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (
         console.log("8080 서버실행중")
     })
 })
+
+// app.use(express.static(path.join(__dirname, 'moobpl/build')));
+
+// app.get('/', function (req, res) {
+//   res.sendFile(path.join(__dirname, '/moobpl/build/index.html'));
+// });
 
 app.get('/api', (req, res) => {
     res.status(200).json({
@@ -362,3 +361,7 @@ app.patch('/api/plan/:id/checklist', async (req, res) => {
         console.error(error)
     }
 })
+
+// app.get('*', function (req, res) {
+//     res.sendFile(path.join(__dirname, '/moobpl/build/index.html'));
+// });
