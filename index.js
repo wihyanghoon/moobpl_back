@@ -14,7 +14,7 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: true,
+    origin: 'https://moobplback.herokuapp.com/',
     credentials: true,
 }))
 
