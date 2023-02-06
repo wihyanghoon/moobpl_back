@@ -28,7 +28,6 @@ app.use(session({
     proxy: true,
     cookie: {
         httpOnly : false,
-        sameSite : 'None',
         maxAge : 5300000,
         secure : true,
     }
