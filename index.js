@@ -17,7 +17,7 @@ app.use(cors({
     origin: ['https://moobplback.herokuapp.com/', 'http://localhost:3000'],
     credentials: true,
 }))
-
+app.set('trust proxy', 1);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser())
@@ -27,9 +27,9 @@ app.use(session({
     secret: process.env.COOKIE_SECRET,
     proxy: true,
     cookie: {
-        httpOnly : false,
-        maxAge : 5300000,
-        sameSite : 'None',
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 5,
+        sameSite: 'strict',
         secure : true,
     }
 }));
