@@ -14,7 +14,7 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: ['https://moobpl.herokuapp.com/', 'https://localhost:3000', 'https://localhost:8080'],
+    origin: ['https://moobpl.herokuapp.com/', 'https://localhost:3000', 'https://localhost:8080g'],
     credentials: true,
 }))
 
@@ -51,10 +51,10 @@ MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (
     })
 })
 
-app.use(express.static(path.join(__dirname, 'moobpl/build')));
+app.use(express.static(path.join(__dirname, './moobpl/build')));
 
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, '/moobpl/build/index.html'));
+  res.sendFile(path.join(__dirname, './moobpl/build/index.html'));
 });
 
 app.get('/api', (req, res) => {
