@@ -14,7 +14,7 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: ['https://moobplback.herokuapp.com/', 'http://localhost:3000'],
+    origin: ['https://moobplback.herokuapp.com/', 'http://localhost:3000', 'http://localhost:8080'],
     credentials: true,
 }))
 
@@ -26,11 +26,15 @@ app.use(session({
     resave: false,
     secret: process.env.COOKIE_SECRET,
     proxy: true,
-    cookie: { 
-        httpOnly: true,
-        secure: true,
+    cookie: {
+        // httpOnly: false,
+        // secure: true,
+        // maxAge: 1000 * 60 * 10,
+        // sameSite: "none",
+
+        httpOnly: false,
         maxAge: 1000 * 60 * 10,
-        sameSite: "none",
+        
     }
 }));
 
@@ -57,11 +61,11 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build/index.html'));
 });
 
-// app.get('/api', (req, res) => {
-//     res.status(200).json({
-//         message: "환영합니다. 뭅플 벡엔드 서버입니다.",
-//     })
-// })
+app.get('/api', (req, res) => {
+    res.status(200).json({
+        message: "환영합니다. 뭅플 벡엔드 서버입니다.",
+    })
+})
 
 app.post('/api/user/signup', async (req, res) => {
     try {
