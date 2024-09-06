@@ -14,7 +14,7 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: ['https://moobplback.herokuapp.com/', 'http://localhost:3000', 'http://localhost:8080'],
+    origin: ['https://moobpl-back.vercel.app/', 'http://localhost:3000', 'http://localhost:8080'],
     credentials: true,
 }))
 
