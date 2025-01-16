@@ -44,16 +44,21 @@ app.use(passport.session())
 const Port = process.env.PORT || 8080;
 
 let db
-const MongoClient = require('mongodb').MongoClient // mongodb
-MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (error, client) {
+const MongoClient = require('mongodb').MongoClient;
+(async () => {
+    try {
+        console.log("MongoDB 연결 시도 중...");
+        const client = await MongoClient.connect(process.env.DB_URL);
+        console.log("MongoDB 연결 성공!");
+        db = client.db("moobpl");
 
-    if (error) return console.log(error)
-    db = client.db("moobpl")
-
-    app.listen(Port, function () {
-        console.log("8080 서버실행중")
-    })
-})
+        app.listen(Port, () => {
+            console.log(`${Port} 포트에서 서버 실행 중`);
+        });
+    } catch (error) {
+        console.error("MongoDB 연결 실패:", error.message);
+    }
+})();
 
 app.use(express.static(path.join(__dirname, 'build')));
 
